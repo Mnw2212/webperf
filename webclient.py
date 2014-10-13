@@ -57,6 +57,26 @@ def CheckInternalWebServers(serverlist,port):
                 data = urlopen("http://%s:%s/%s") %(server,port,file)
                 stuff = data.read()
                 end = time.time()
-                difference = end-start
-                print file, "took %2.2f second to load" %(difference)
-                logfile.write("")
+                difference = end - start
+                print file, "took %2.2f second to load" %( difference )
+                logfile.write("%s took %2.2f seconds to load" %( file, difference) + "\n")
+        except:
+            errno, errstr = sys.exc_info()[:2]
+            if errno == socket.timeout:
+                timeouterror = "There was a timeout"
+                logfile.write(timeouterror+"\n\n")
+                print timeouterror
+                logfile.close()
+                raw_input("Press Enter to continue: ")
+                return
+            else:
+                genericerror = "Error connecting to server " + server
+                logfile.write(genericerror +"\n\n")
+                print genericerror
+                raw_input("Press Enter to Continue")
+                return
+
+    print "\n"
+    logfile.write("\n")
+    logfile.close()
+    raw_input("Press Enter to Continue: ")
